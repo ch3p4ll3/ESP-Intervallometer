@@ -1,6 +1,7 @@
 import bluetooth
 
 import sys
+from datetime import time
 
 from PySide2.QtWidgets import QApplication, QMainWindow, QMessageBox
 from UI.ui_mainwindow import Ui_MainWindow
@@ -70,10 +71,29 @@ class MainWindow(QMainWindow):
         self.ui.pushButton.clicked.connect(lambda: self.send_message("singleShot#"))
         self.ui.pushButton_2.clicked.connect(lambda: self.send_message("Bulb#"))
         self.ui.pushButton_3.clicked.connect(lambda: self.send_message("stop"))
-        self.ui.pushButton_4.clicked.connect(lambda: self.send_message(f"timerBulb#{self.ui.spinBox.text()}"))
+        self.ui.pushButton_4.clicked.connect(self.timer_bulb)
         self.ui.pushButton_5.clicked.connect(lambda: self.send_message("stop"))
-        self.ui.pushButton_6.clicked.connect(lambda: self.send_message(f"intervallometer#{self.ui.spinBox_2.text()}#{self.ui.spinBox_3.text()}"))
+        self.ui.pushButton_6.clicked.connect(self.intervallometer)
+        self.ui.pushButton_8.clicked.connect(self.bulb_intervallometer)
+        self.ui.pushButton_9.clicked.connect(lambda: self.send_message("stop"))
         self.ui.pushButton_7.clicked.connect(lambda: self.send_message("stop"))
+
+    def bulb_intervallometer(self):
+        delay = self.ui.timeEdit_4.time().toPython()
+        shutter_on = self.ui.timeEdit_3.time().toPython()
+        seconds_del = (delay.hour * 60 + delay.minute) * 60 + delay.second
+        seconds_sh = (shutter_on.hour * 60 + shutter_on.minute) * 60 + shutter_on.second
+        self.send_message(f"bulbIntervallometer#{seconds_del}#{self.ui.spinBox_4.text()}#{seconds_sh}")
+
+    def timer_bulb(self):
+        delay = self.ui.timeEdit_2.time().toPython()
+        seconds = (delay.hour * 60 + delay.minute) * 60 + delay.second
+        self.send_message(f"timerBulb#{seconds}")
+
+    def intervallometer(self):
+        delay = self.ui.timeEdit_5.time().toPython()
+        seconds_del = (delay.hour * 60 + delay.minute) * 60 + delay.second
+        self.send_message(f"intervallometer#{seconds_del}#{self.ui.spinBox_3.text()}")
 
     def exit(self):
         try:

@@ -21,14 +21,18 @@ Internal connections
 As you can see for the correct functioning of the intervalometer it is mandatory to use manual focus
 
 ## Commands
-|       Command        |                        What it does                      |
-| -------------------- | -------------------------------------------------------- |
-| singleShot#          | Single shot. Opens the shutter and closes it after 100ms |
-| Bulb#                | Opens the shutter until the stop command is sent         |
-| timerBulb#x          | Opens the shutter for x seconds, then closes it          |
-| intervallometer#x#y  | Opens the shutter every x seconds for 100ms y times      |
-| stop                 | Stop everything                                          |
+|          Command           |                          What it does                        |
+| -------------------------- | ------------------------------------------------------------ |
+| singleShot#                | Single shot. Opens the shutter and closes it after 100ms     |
+| Bulb#                      | Opens the shutter until the stop command is sent             |
+| timerBulb#x                | Opens the shutter for x seconds, then closes it              |
+| intervallometer#x#y        | Opens the shutter every x seconds for 100ms y times          |
+| bulbIntervallometer#x#y#z  | Opens the shutter every x seconds for z seconds y times      |
+| stop                       | Stop everything                                              |
 
 ### Examples
+If you send this command `bulbIntervallometer#5#10#3` the shutter will open for 3s every 5s for 10 times or until you send the `stop` command  
+\
 If you send this command `intervallometer#5#10` the shutter will open every 5s for 10 times or until you send the `stop` command  
+\
 If you send this command `timerBulb#10` the shutter will open for 10s or until you send the `stop` command  

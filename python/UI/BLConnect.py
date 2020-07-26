@@ -59,7 +59,7 @@ class Ui_Form(object):
     # setupUi
 
     def retranslateUi(self, Form):
-        Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        Form.setWindowTitle(QCoreApplication.translate("Form", u"Connect to device", None))
         self.pushButton_2.setText(QCoreApplication.translate("Form", u"OK", None))
         self.pushButton_3.setText(QCoreApplication.translate("Form", u"Ricarica", None))
         self.pushButton.setText(QCoreApplication.translate("Form", u"Quit", None))

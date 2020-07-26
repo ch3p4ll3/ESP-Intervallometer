@@ -32,7 +32,8 @@ def print_menu() -> None:
     print("1) Bulb")
     print("2) Timer bulb")
     print("3) Intervallometer")
-    print("4) Stop")
+    print("4) BULB intervallometer")
+    print("5) Stop")
     print("Something else for exit")
 
 
@@ -41,8 +42,10 @@ def parse_method(method, bt_sock) -> None:
         method = int(method)
         if method == 0:
             send_message(bt_sock, "singleShot#")
+
         elif method == 1:
             send_message(bt_sock, "Bulb#")
+
         elif method == 2:
             print("For how many seconds must the shutter remain open?")
             seconds = -1
@@ -53,6 +56,7 @@ def parse_method(method, bt_sock) -> None:
                     pass
 
             send_message(bt_sock, f'timerBulb#{seconds}')
+
         elif method == 3:
             print("How many seconds between shots?")
             seconds = -1
@@ -71,7 +75,35 @@ def parse_method(method, bt_sock) -> None:
                     pass
 
             send_message(bt_sock, f'intervallometer#{seconds}#{shots}')
+
         elif method == 4:
+            print("How many seconds between shots?")
+            seconds = -1
+            while seconds <= 0:
+                try:
+                    seconds = int(input("seconds: "))
+                except ValueError:
+                    pass
+
+            print("How many shots?")
+            shots = -1
+            while shots <= 0:
+                try:
+                    shots = int(input("shots: "))
+                except ValueError:
+                    pass
+
+            print("How long the shutter should stay open?")
+            wait = -1
+            while wait <= 0:
+                try:
+                    wait = int(input("shots: "))
+                except ValueError:
+                    pass
+
+            send_message(bt_sock, f'bulbIntervallometer#{seconds}#{shots}#{wait}')
+
+        elif method == 5:
             send_message(bt_sock, "stop")
 
     else:
