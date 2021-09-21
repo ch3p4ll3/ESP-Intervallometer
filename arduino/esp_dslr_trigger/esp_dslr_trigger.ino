@@ -3,8 +3,10 @@
 BluetoothSerial ESP_BT; //Object for Bluetooth
 
 #define shotPin 2
+#define focusPin 15
 
 int period, shots, wait;
+bool af = false;
 unsigned long time_now, wait_time;
 int run = -1; //-1 stop, 0 intervallometer, 1 bulb, 2 timer bulb, 3 bulb intervallometer
 
@@ -17,6 +19,7 @@ void bulbIntervallometer();
 
 void setup() {
     pinMode(shotPin, OUTPUT);
+    pinMode(focusPin, OUTPUT);
     Serial.begin(115200); //Start Serial monitor in 115200
     ESP_BT.begin("ESP32_Shutter_Control"); //Name of your Bluetooth Signal
     Serial.println("Bluetooth Device is Ready to Pair");
@@ -35,24 +38,35 @@ void loop() {
         parser(message);
     }
 
+    if (af){
+      digitalWrite(focusPin, HIGH);
+    }
+
     switch(run){
-        case -1:
+      case -1:
         if (digitalRead(shotPin))
-            digitalWrite(shotPin, LOW);
-            break;
+          digitalWrite(shotPin, LOW);
+
+        if (!af)
+          digitalWrite(focusPin, LOW);
+      break;
 
         case 0:
             intervallometer();
             break;
 
         case 1:
+            if (!af){
+                digitalWrite(focusPin, HIGH);
+                delay(100);
+            }
             digitalWrite(shotPin, HIGH);
             break;
 
         case 2:
             timerBulb();
             break;
-        
+
         case 3:
             bulbIntervallometer();
             break;
@@ -67,9 +81,16 @@ void loop() {
 
 void intervallometer(){
     if((millis() - time_now) % period == 0 && run == 0 && shots > 0){
+        if (!af){
+          digitalWrite(focusPin, HIGH);
+          delay(100);
+        }
         digitalWrite(shotPin, HIGH);
         delay(100);
         digitalWrite(shotPin, LOW);
+        if (!af){
+          digitalWrite(focusPin, LOW);
+        }
         shots--;
         Serial.println(shots);
         ESP_BT.println(shots);
@@ -84,9 +105,13 @@ void intervallometer(){
 
 void bulbIntervallometer(){
     String message;
-    
+
     if(run == 3 && shots > 0){
         if ((millis() - time_now) % period == 0) {
+            if (!af){
+              digitalWrite(focusPin, HIGH);
+              delay(100);
+            }
             digitalWrite(shotPin, HIGH);
             wait_time = millis();
             while ((millis() - wait_time) <= wait && run == 3){
@@ -101,6 +126,9 @@ void bulbIntervallometer(){
             }
 
             digitalWrite(shotPin, LOW);
+            if (!af){
+              digitalWrite(focusPin, LOW);
+            }
             shots--;
             time_now = millis();
             delay(1);
@@ -118,6 +146,10 @@ void bulbIntervallometer(){
 
 void timerBulb(){
     if (!digitalRead(shotPin))
+        if (!af){
+          digitalWrite(focusPin, HIGH);
+          delay(100);
+        }
         digitalWrite(shotPin, HIGH);
 
     if ((millis() - time_now) >= period && run == 2){
@@ -176,9 +208,20 @@ void parser(String c){
     }
 
     else if (tmp[0] == "singleShot"){
+        if (!af){
+          digitalWrite(focusPin, HIGH);
+          delay(100);
+        }
         digitalWrite(shotPin, HIGH);
         delay(100);
         digitalWrite(shotPin, LOW);
+        if (!af){
+          digitalWrite(focusPin, LOW);
+        }
+    }
+
+    else if (tmp[0] == "af"){
+        af = tmp[1].equals("1");
     }
 
     else if (tmp[0] == "stop"){

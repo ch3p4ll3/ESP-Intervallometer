@@ -1,5 +1,5 @@
 # ESP-DSLR-Trigger
-Trigger for DSLR cameras based on ESP-32
+An intervalometer based on an ESP32 for DSLR
 
 ## How it works
 This simple intervalometer is based on an esp-32. The client connects to the esp bluetooth and sends commands via bluetooth serial and the ESP will manage the shooting of your DSLR autonomously!
@@ -18,7 +18,6 @@ Simple scheme
 Internal connections 
 ![](internal.jpg)
 
-As you can see for the correct functioning of the intervalometer it is mandatory to use manual focus
 
 ## Commands
 |          Command           |                          What it does                        |
@@ -28,6 +27,7 @@ As you can see for the correct functioning of the intervalometer it is mandatory
 | timerBulb#x                | Opens the shutter for x seconds, then closes it              |
 | intervallometer#x#y        | Opens the shutter every x seconds for 100ms y times          |
 | bulbIntervallometer#x#y#z  | Opens the shutter every x seconds for z seconds y times      |
+| af#1                       | Enable AutoFocus                                             |
 | stop                       | Stop everything                                              |
 
 ### Examples
@@ -36,3 +36,5 @@ If you send this command `bulbIntervallometer#5#10#3` the shutter will open for 
 If you send this command `intervallometer#5#10` the shutter will open every 5s for 10 times or until you send the `stop` command  
 \
 If you send this command `timerBulb#10` the shutter will open for 10s or until you send the `stop` command  
+\
+If you send this command `af#1` autofocus will be used

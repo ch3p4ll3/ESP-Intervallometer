@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">ESP-Intervallometer</string>
+    <string name="tab_text_1">Single Shot</string>
+    <string name="tab_text_2">Bulb</string>
+    <string name="tab_text_3">timer Bulb</string>
+    <string name="tab_text_4">intervallometer</string>
+    <string name="tab_text_5">Bulb Intervallometer</string>
+
+    <string name="stop_btn">Stop</string>
+    <string name="single_shot_btn">Shot</string>
+    <string name="bulb_btn">start BULB</string>
+    <string name="bult_btn_stop">Stop BULB</string>
+    <string name="timer_bulb_hint">Seconds</string>
+    <string name="interval_btn">Start Intervallometer</string>
+    <string name="delay">Delay from every shot</string>
+    <string name="every">Number of shots</string>
+    <string name="bulb_int_btn">Start Bulb Intervallometer</string>
+    <string name="bulb_dur">Bulb duration</string>
+    <string name="af_check">Autofocus</string>
+</resources>
