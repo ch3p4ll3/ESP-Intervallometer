@@ -1,18 +1,21 @@
 #include "Arduino.h"
+#include <BLEDevice.h>
 #include "./intervallometer.h"
 
 #pragma region constructors
-IntervalloMeter::IntervalloMeter(short int shotPin){
+IntervalloMeter::IntervalloMeter(short int shotPin, BLECharacteristic *bleShots){
     this->shotPin = shotPin;
     this->isAutofocus = false;
+    this->bleShots = bleShots;
 
     pinMode(shotPin, OUTPUT);
 }
 
-IntervalloMeter::IntervalloMeter(short int shotPin, short int autofocusPin, int autofocusDelay){
+IntervalloMeter::IntervalloMeter(short int shotPin, short int autofocusPin, int autofocusDelay, BLECharacteristic *bleShots){
     this->shotPin = shotPin;
     this->autoFocusPin = autofocusPin;
     this->autofocusDelay = autofocusDelay;
+    this->bleShots = bleShots;
 
     this->isAutofocus = false;
 
@@ -39,6 +42,8 @@ void IntervalloMeter::loop(){
         }
 
         // notify BLE Client
+        this->bleShots->setValue(String(this->shots).c_str());
+        this->bleShots->notify();
         this->time_now = millis();
         this->shots--;
     }

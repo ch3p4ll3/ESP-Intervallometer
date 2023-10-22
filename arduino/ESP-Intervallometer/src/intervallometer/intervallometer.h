@@ -1,5 +1,6 @@
+#pragma once
+#include <BLEDevice.h>
 #include "Arduino.h"
-
 
 enum IntervallometerStatus {IDLE, SingleShot, Bulb, TimerBulb, Intervallometer, BulbIntervallometer };
 
@@ -26,13 +27,15 @@ class IntervalloMeter{
         long unsigned int delay;
         long unsigned int wait;
 
+        BLECharacteristic *bleShots;
+
         void SingleShot(long unsigned int waitTime);
 
     public:
         IntervallometerStatus status = IntervallometerStatus::IDLE;
 
-        IntervalloMeter(short int shotPin);
-        IntervalloMeter(short int shotPin, short int autofocusPin, int autofocusDelay);
+        IntervalloMeter(short int shotPin, BLECharacteristic *bleShots);
+        IntervalloMeter(short int shotPin, short int autofocusPin, int autofocusDelay, BLECharacteristic *bleShots);
 
         void setProgram(Program program);
 
