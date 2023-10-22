@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <title>ESP Intervallometer</title>
+  <link rel="manifest" href="manifest.json" />
+  <script src="./assets/js/theme.js"></script>
+  <script src="./assets/js/constants.js"></script>
+  <script src="./assets/js/bootstrap.min.js"></script>
+  <script src="./assets//js/jquery-3.3.1.slim.min.js"></script>
+  <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./assets/css/theme.css">
+
+  <link rel="shortcut icon" href="./assets/icon/icon.svg" type="image/x-icon">
+</head>
+
+<body>
+
+  <div class="position-relative">
+    <div class="position-absolute top-0 end-0 p-2">
+      <button class="theme-toggle btn" id="theme-toggle" title="Toggles light & dark" aria-label="auto"
+        aria-live="polite">
+        <svg class="sun-and-moon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+          <mask class="moon" id="moon-mask">
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <circle cx="24" cy="10" r="6" fill="black" />
+          </mask>
+          <circle class="sun" cx="12" cy="12" r="6" mask="url(#moon-mask)" fill="currentColor" />
+          <g class="sun-beams" stroke="currentColor">
+            <line x1="12" y1="1" x2="12" y2="3" />
+            <line x1="12" y1="21" x2="12" y2="23" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+            <line x1="1" y1="12" x2="3" y2="12" />
+            <line x1="21" y1="12" x2="23" y2="12" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+          </g>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+
+  <div class="container-fluid h-100 pt-5">
+    <div class="row justify-content-center">
+      <div class="col-3">
+        <h3>Status: </h3>
+        <button class="btn btn-danger" id="btnConnected">Disconnected</button>
+        <p id="status"></p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center text-center pt-5">
+      <div class="col-6">
+        <div class="card visually-hidden" id="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">Intervallometer</h5>
+            <div class="input-group mb-3">
+              <span class="input-group-text">Set Program</span>
+              <select class="form-select" id="program-select">
+                <option value="1">SingleShot</option>
+                <option value="2">IntervalloMeter</option>
+                <option value="3">Bulb</option>
+                <option value="4">TimerBulb</option>
+                <option value="5">BulbIntervalloMeter</option>
+              </select>
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Number of Shots</span>
+              <input type="number" class="form-control" placeholder="Shots" aria-label="Shots"
+                aria-describedby="basic-addon1" min="1" value="1" id="shotsInput">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Delay between Shots</span>
+              <input type="number" class="form-control" placeholder="Delay" aria-label="Delay"
+                aria-describedby="basic-addon1" min="1" value="1" id="delayInput">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Wait (BULB only)</span>
+              <input type="number" class="form-control" placeholder="Wait" aria-label="Wait"
+                aria-describedby="basic-addon1" min="1" value="1" id="waitInput">
+            </div>
+
+            <div class="text-start pt-3">
+              <h5>Remaining Shots: <span id="remaining-shots"></span></h5>
+            </div>
+
+            <div class="text-center pt-3">
+              <button class="btn btn-danger" id="stopBtn">STOP</button>
+              <button id="sendBtn" class="btn btn-success">SEND</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let _server = null;
+    let _ble = null;
+    let _service = null;
+
+    let _delay = null
+    let _shots = null
+    let _status = null
+    let _wait = null
+
+    if ('bluetooth' in navigator) {
+      const scan = document.getElementById('btnConnected');
+
+      scan.addEventListener('click', async () => {
+        _ble = await navigator.bluetooth.requestDevice({
+          filters: [{
+            services: [UUIDs.SERVICE_UUID]
+          }]
+        })
+
+        console.log('Connecting to GATT Server...');
+        $('#status').text('Connecting to GATT Server...')
+        _server = await _ble.gatt.connect();
+
+        $(scan).removeClass('btn-danger')
+        $(scan).addClass('btn-success')
+        $(scan).text('Connected')
+        $('#card').removeClass('visually-hidden')
+
+        console.log('Getting Service...');
+        $('#status').text('Getting Service...')
+        _service = await _server.getPrimaryService(UUIDs.SERVICE_UUID);
+        console.log('Service gathered...')
+        $('#status').text('Getting Characteristics...')
+
+        _delay = await _service.getCharacteristic(UUIDs.DELAY_CHARACTERISTIC_UUID)
+        _shots = await _service.getCharacteristic(UUIDs.SHOTS_CHARACTERISTIC_UUID)
+        _status = await _service.getCharacteristic(UUIDs.STATUS_CHARACTERISTIC_UUID)
+        _wait = await _service.getCharacteristic(UUIDs.WAIT_CHARACTERISTIC_UUID)
+
+        console.log('starting Notification Service')
+        $('#status').text('starting Notification Service...')
+
+        try {
+          await _shots.startNotifications();
+
+          console.log('> Notifications started');
+          _shots.addEventListener('characteristicvaluechanged',
+            handleNotifications);
+        } catch (error) {
+          console.log('Error setting up notifications', error)
+          $('#status').text('Error setting up notifications')
+        }
+      });
+
+      $('#sendBtn').click(async function () {
+        let shots = $('#shotsInput').val()
+        let delay = $('#delayInput').val()
+        let wait = $('#waitInput').val()
+        let status = $('#program-select').val()
+
+        $('#remaining-shots').text(shots)
+
+        let enc = new TextEncoder();
+
+        await _delay.writeValue(enc.encode(delay.toString()))
+        await _shots.writeValue(enc.encode(shots.toString()))
+        await _wait.writeValue(enc.encode(wait.toString()))
+        await _status.writeValue(enc.encode(status.toString()))
+      })
+
+
+      $('#stopBtn').click(async function () {
+        let enc = new TextEncoder();
+
+        await _delay.writeValue(enc.encode("0"))
+        await _shots.writeValue(enc.encode("0"))
+        await _wait.writeValue(enc.encode("0"))
+        await _status.writeValue(enc.encode("0"))
+      })
+
+    }
+
+    function handleNotifications(event) {
+      let value = event.target.value;
+
+      console.log(value)
+
+    }
+
+    function onDisconnected() {
+      console.log('> Bluetooth Device disconnected');
+      connectDeviceAndCacheCharacteristics()
+        .catch(error => {
+          console.log('Argh! ' + error);
+        });
+    }
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker
+          .register("/serviceWorker.js")
+          .then(res => console.log("service worker registered"))
+          .catch(err => console.log("service worker not registered", err));
+      });
+    }
+  </script>
+
+</body>
+
+</html>
