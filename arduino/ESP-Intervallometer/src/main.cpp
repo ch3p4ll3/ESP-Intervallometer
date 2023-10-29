@@ -15,10 +15,10 @@
 #define BLE_SERVER_NAME "ESP-Intervallometer"
 
 #pragma region global variables
-BLECharacteristic DelayCharacteristics(DELAY_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+BLECharacteristic DelayCharacteristics(DELAY_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 BLECharacteristic ShotsCharacteristics(SHOTS_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-BLECharacteristic WaitCharacteristics(WAIT_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
-BLECharacteristic StatusCharacteristics(STATUS_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+BLECharacteristic WaitCharacteristics(WAIT_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+BLECharacteristic StatusCharacteristics(STATUS_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 
 IntervalloMeter intervallometer(2, &ShotsCharacteristics);
 
