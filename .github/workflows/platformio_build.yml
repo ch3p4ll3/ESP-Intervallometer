@@ -22,8 +22,6 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: CD to working directory
-        run: cd ./arduino/ESP-Intervallometer
-
       - name: Build PlatformIO Project
+        working-directory: ./arduino/ESP-Intervallometer
         run: pio run
