@@ -5,9 +5,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        example: [path/to/test/file.c, examples/file.ino, path/to/test/directory]
 
     steps:
       - uses: actions/checkout@v3
@@ -24,6 +21,6 @@ jobs:
         run: pip install --upgrade platformio
 
       - name: Build PlatformIO
-        run: pio ci --board=esp32dev --project-dir arduino/ESP-Intervallometer
+        run: pio ci --board=esp32dev --project-conf arduino/ESP-Intervallometer/platformio.ini
         env:
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
