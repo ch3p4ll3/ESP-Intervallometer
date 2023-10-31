@@ -14,14 +14,16 @@ jobs:
             ~/.cache/pip
             ~/.platformio/.cache
           key: ${{ runner.os }}-pio
+
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
-      - name: CD to working dir
-        run: cd ./arduino/ESP-Intervallometer/
+      - name: CD to working directory
+        run: cd ./arduino/ESP-Intervallometer
 
-      - name: Build PlatformIO
-        run: pio ci --board=esp32dev
+      - name: Build PlatformIO Project
+        run: pio run
