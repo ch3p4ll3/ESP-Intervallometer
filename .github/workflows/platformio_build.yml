@@ -20,7 +20,8 @@ jobs:
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
+      - name: CD to working dir
+        run: cd ./arduino/ESP-Intervallometer/
+
       - name: Build PlatformIO
-        run: pio ci --board=esp32dev --project-conf arduino/ESP-Intervallometer/platformio.ini
-        env:
-          PLATFORMIO_CI_SRC: ${{ matrix.example }}
+        run: pio ci --board=esp32dev
