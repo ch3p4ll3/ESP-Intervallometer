@@ -10,11 +10,11 @@
   <script src="./assets/js/theme.js"></script>
   <script src="./assets/js/constants.js"></script>
   <script src="./assets/js/bootstrap.min.js"></script>
-  <script src="./assets//js/jquery-3.3.1.slim.min.js"></script>
+  <script src="./assets/js/jquery-3.3.1.slim.min.js"></script>
   <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="./assets/css/theme.css">
 
-  <link rel="shortcut icon" href="./assets/icon/icon.svg" type="image/x-icon">
+  <link rel="shortcut icon" href="./assets/icon/icon.png" type="image/x-icon">
 </head>
 
 <body>
@@ -204,7 +204,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", function () {
         navigator.serviceWorker
-          .register("/serviceWorker.js")
+          .register("ESP-Intervallometer/serviceWorker.js")
           .then(res => console.log("service worker registered"))
           .catch(err => console.log("service worker not registered", err));
       });
