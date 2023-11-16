@@ -217,10 +217,8 @@
 
         timer = setInterval(function() {
             _shots.readValue().then((value) => {
-              console.log(value)
               var enc = new TextDecoder(); // always utf-8
-              console.log(enc.decode(value));
-              $('#remaining-shots').text(value)
+              $('#remaining-shots').text(enc.decode(value))
             })
             
           }, 500);
