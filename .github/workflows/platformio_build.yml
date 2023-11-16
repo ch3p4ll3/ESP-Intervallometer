@@ -25,3 +25,8 @@ jobs:
       - name: Build PlatformIO Project
         working-directory: ./arduino/ESP-Intervallometer
         run: pio run
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: firmware.bin
+          path: ./arduino/ESP-Intervallometer/.pio/build/esp32dev/firmware.bin
