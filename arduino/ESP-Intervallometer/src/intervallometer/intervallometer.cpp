@@ -48,7 +48,7 @@ void IntervalloMeter::setProgram(Program program){
     this->delay = program.delay * 1000;
     this->wait = program.wait * 1000;
     this->isAutofocus = program.useAutofocus;
-    this->autofocusDelay = program.autofocusDelay;
+    this->autofocusDelay = program.autofocusDelay * 1000;
     this->status = program.status;
 
     switch (this->status)
