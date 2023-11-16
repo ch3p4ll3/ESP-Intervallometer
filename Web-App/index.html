@@ -173,9 +173,10 @@
         } catch (error) {
           console.log('Error setting up notifications', error)
           timer = setInterval(function() {
-            let value = _shots.readValue();
-
-            $('#remaining-shots').text(value)
+            _shots.readValue().then((value) => {
+              $('#remaining-shots').text(value)
+            })
+            
           }, 200);
           $('#status').text('Error setting up notifications')
         }
