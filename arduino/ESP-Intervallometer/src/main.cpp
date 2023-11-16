@@ -10,6 +10,8 @@
 #define DELAY_CHARACTERISTICS_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define SHOTS_CHARACTERISTICS_UUID "5bd6d6d5-8d8a-43c1-9626-ae6b45b5dfa6"
 #define WAIT_CHARACTERISTICS_UUID "fe8cb5c3-db5c-4de7-9e2c-fb7dec9f469b"
+#define AUTOFOCUS_CHARACTERISTICS_UUID "29292731-e87e-4834-a5dc-6f18b3535cd6"
+#define AUTOFOCUS_DELAY_CHARACTERISTICS_UUID "0cc3228d-d3fc-4d62-93dd-8e1396d5544c"
 #define STATUS_CHARACTERISTICS_UUID "1f85fe39-fe80-4bfe-8df0-a8a893d22dc1"
 
 #define BLE_SERVER_NAME "ESP-Intervallometer"
@@ -18,9 +20,11 @@
 BLECharacteristic DelayCharacteristics(DELAY_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 BLECharacteristic ShotsCharacteristics(SHOTS_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 BLECharacteristic WaitCharacteristics(WAIT_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+BLECharacteristic AutofocusCharacteristics(AUTOFOCUS_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+BLECharacteristic AutofocusDelayCharacteristics(AUTOFOCUS_DELAY_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 BLECharacteristic StatusCharacteristics(STATUS_CHARACTERISTICS_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 
-IntervalloMeter intervallometer(2, &ShotsCharacteristics);
+IntervalloMeter intervallometer(2, 4, &ShotsCharacteristics);
 
 Program intervallometerProgram;
 #pragma endregion
@@ -28,6 +32,7 @@ Program intervallometerProgram;
 #pragma region function declarations
 void initBLE();
 void setCallbacks();
+void setDefaults();
 #pragma endregion
 
 class StatusCallback : public BLECharacteristicCallbacks
@@ -47,6 +52,7 @@ void setup()
 {
   initBLE();
   setCallbacks();
+  setDefaults();
 
   Serial.begin(9600);
 }
@@ -69,6 +75,8 @@ void initBLE()
   intervallometerService->addCharacteristic(&DelayCharacteristics);
   intervallometerService->addCharacteristic(&ShotsCharacteristics);
   intervallometerService->addCharacteristic(&WaitCharacteristics);
+  intervallometerService->addCharacteristic(&AutofocusCharacteristics);
+  intervallometerService->addCharacteristic(&AutofocusDelayCharacteristics);
   intervallometerService->addCharacteristic(&StatusCharacteristics);
 
   // Start the service
@@ -85,5 +93,16 @@ void setCallbacks()
   DelayCharacteristics.setCallbacks(new DelayCallback(&intervallometerProgram));
   ShotsCharacteristics.setCallbacks(new ShotsCallback(&intervallometerProgram));
   WaitCharacteristics.setCallbacks(new WaitCallback(&intervallometerProgram));
+  AutofocusCharacteristics.setCallbacks(new AutofocusCallback(&intervallometerProgram));
+  AutofocusDelayCharacteristics.setCallbacks(new AutofocusDelayCallback(&intervallometerProgram));
   StatusCharacteristics.setCallbacks(new StatusCallback());
+}
+
+void setDefaults(){
+  DelayCharacteristics.setValue("1");
+  ShotsCharacteristics.setValue("1");
+  WaitCharacteristics.setValue("1");
+  AutofocusCharacteristics.setValue("0");
+  AutofocusDelayCharacteristics.setValue("1500");
+  StatusCharacteristics.setValue("0");
 }

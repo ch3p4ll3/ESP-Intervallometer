@@ -59,3 +59,41 @@ class WaitCallback : public BLECharacteristicCallbacks
       this->program->wait = delay_time;
     }
 };
+
+class AutofocusCallback : public BLECharacteristicCallbacks
+{
+  public:
+    Program *program;
+
+    AutofocusCallback(Program *program){
+      this->program = program;
+    }
+  
+    void onWrite(BLECharacteristic *pCharacteristic)
+    {
+      String rxValue = pCharacteristic->getValue().c_str();
+
+      int useAutofocus = rxValue.toInt();
+
+      this->program->useAutofocus = bool(useAutofocus);
+    }
+};
+
+class AutofocusDelayCallback : public BLECharacteristicCallbacks
+{
+  public:
+    Program *program;
+
+    AutofocusDelayCallback(Program *program){
+      this->program = program;
+    }
+  
+    void onWrite(BLECharacteristic *pCharacteristic)
+    {
+      String rxValue = pCharacteristic->getValue().c_str();
+
+      int autofocusDelay = rxValue.toInt();
+
+      this->program->autofocusDelay = autofocusDelay;
+    }
+};

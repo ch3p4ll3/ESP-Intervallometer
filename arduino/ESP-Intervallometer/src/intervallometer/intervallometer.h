@@ -10,6 +10,8 @@ struct Program{
     long unsigned int shots;
     long unsigned int delay;  // delay between a shot
     long unsigned int wait;  // time to wait for a bulb photo
+    unsigned int autofocusDelay;
+    bool useAutofocus;
 };
 
 
@@ -18,8 +20,8 @@ class IntervalloMeter{
         bool isAutofocus;
         short int shotPin;
         short int autoFocusPin;
-        int autofocusDelay;
-        int shotDelay = 10;
+        unsigned int autofocusDelay;
+        int shotDelay = 100;
 
         long unsigned int time_now = millis();
         long unsigned int shots;
@@ -34,8 +36,7 @@ class IntervalloMeter{
     public:
         IntervallometerStatus status = IntervallometerStatus::IDLE;
 
-        IntervalloMeter(short int shotPin, BLECharacteristic *bleShots);
-        IntervalloMeter(short int shotPin, short int autofocusPin, int autofocusDelay, BLECharacteristic *bleShots);
+        IntervalloMeter(short int shotPin, short int autofocusPin, BLECharacteristic *bleShots);
 
         void setProgram(Program program);
 

@@ -2,22 +2,14 @@
 #include <BLEDevice.h>
 #include "./intervallometer.h"
 
-#pragma region constructors
-IntervalloMeter::IntervalloMeter(short int shotPin, BLECharacteristic *bleShots){
-    this->shotPin = shotPin;
-    this->isAutofocus = false;
-    this->bleShots = bleShots;
-
-    pinMode(shotPin, OUTPUT);
-}
-
-IntervalloMeter::IntervalloMeter(short int shotPin, short int autofocusPin, int autofocusDelay, BLECharacteristic *bleShots){
+#pragma region constructor
+IntervalloMeter::IntervalloMeter(short int shotPin, short int autofocusPin, BLECharacteristic *bleShots){
     this->shotPin = shotPin;
     this->autoFocusPin = autofocusPin;
     this->autofocusDelay = autofocusDelay;
     this->bleShots = bleShots;
 
-    this->isAutofocus = false;
+    this->isAutofocus = true;
 
     pinMode(shotPin, OUTPUT);
     pinMode(autofocusPin, OUTPUT);
@@ -55,6 +47,8 @@ void IntervalloMeter::setProgram(Program program){
     this->originalShots = program.shots;
     this->delay = program.delay * 1000;
     this->wait = program.wait * 1000;
+    this->isAutofocus = program.useAutofocus;
+    this->autofocusDelay = program.autofocusDelay;
     this->status = program.status;
 
     switch (this->status)
@@ -82,15 +76,15 @@ void IntervalloMeter::setProgram(Program program){
 
 #pragma region private methods
 void IntervalloMeter::SingleShot(long unsigned int waitTime){
+    digitalWrite(this->autoFocusPin, HIGH);
     if(this->isAutofocus){
-        digitalWrite(this->autoFocusPin, HIGH);
         Arduino_h::delay(this->autofocusDelay);
-        digitalWrite(this->autoFocusPin, LOW);
     }
 
     digitalWrite(this->shotPin, HIGH);
     Arduino_h::delay(waitTime);
     digitalWrite(this->shotPin, LOW);
+    digitalWrite(this->autoFocusPin, LOW);
 }
 
 #pragma endregion
