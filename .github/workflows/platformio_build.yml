@@ -26,7 +26,7 @@ jobs:
         working-directory: ./arduino/ESP-Intervallometer
         run: pio run
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: firmware.bin
           path: ./arduino/ESP-Intervallometer/.pio/build/esp32dev/firmware.bin
