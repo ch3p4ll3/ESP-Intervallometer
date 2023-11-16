@@ -172,12 +172,6 @@
             handleNotifications);
         } catch (error) {
           console.log('Error setting up notifications', error)
-          timer = setInterval(function() {
-            _shots.readValue().then((value) => {
-              $('#remaining-shots').text(value)
-            })
-            
-          }, 200);
           $('#status').text('Error setting up notifications')
         }
 
@@ -201,6 +195,8 @@
       })
 
       $('#sendBtn').click(async function () {
+        clearInterval(timer);
+
         let shots = $('#shotsInput').val();
         let delay = $('#delayInput').val();
         let wait = $('#waitInput').val();
@@ -218,6 +214,16 @@
         await _autofocus.writeValue(enc.encode(autofocus ? "1" : "0"))
         await _autofocus_delay.writeValue(enc.encode(autofocusDelay.toString()))
         await _status.writeValue(enc.encode(status.toString()))
+
+        timer = setInterval(function() {
+            _shots.readValue().then((value) => {
+              console.log(value)
+              var enc = new TextDecoder(); // always utf-8
+              console.log(enc.decode(value));
+              $('#remaining-shots').text(value)
+            })
+            
+          }, 500);
       })
 
 
