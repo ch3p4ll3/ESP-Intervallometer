@@ -27,6 +27,7 @@ BLECharacteristic StatusCharacteristics(STATUS_CHARACTERISTICS_UUID, BLECharacte
 IntervalloMeter intervallometer(2, 4, &ShotsCharacteristics);
 
 Program intervallometerProgram;
+static int taskCore = 1
 #pragma endregion
 
 #pragma region function declarations
