@@ -27,7 +27,7 @@ BLECharacteristic StatusCharacteristics(STATUS_CHARACTERISTICS_UUID, BLECharacte
 IntervalloMeter intervallometer(2, 4, &ShotsCharacteristics);
 
 Program intervallometerProgram;
-static int taskCore = 1;
+static int taskCore = 0;
 #pragma endregion
 
 #pragma region function declarations
@@ -37,11 +37,13 @@ void setDefaults();
 void coreTask( void * pvParameters );
 #pragma endregion
 
+
 void coreTask( void * pvParameters ){
     while(true){
         intervallometer.loop();
     }
 }
+
 
 class StatusCallback : public BLECharacteristicCallbacks
 {

@@ -32,6 +32,7 @@ class IntervalloMeter{
         BLECharacteristic *bleShots;
 
         void SingleShot(long unsigned int waitTime);
+        void Delay(long unsigned int waitTime);
 
     public:
         IntervallometerStatus status = IntervallometerStatus::IDLE;
