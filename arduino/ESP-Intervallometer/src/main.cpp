@@ -27,13 +27,23 @@ BLECharacteristic StatusCharacteristics(STATUS_CHARACTERISTICS_UUID, BLECharacte
 IntervalloMeter intervallometer(2, 4, &ShotsCharacteristics);
 
 Program intervallometerProgram;
+static int taskCore = 0;
 #pragma endregion
 
 #pragma region function declarations
 void initBLE();
 void setCallbacks();
 void setDefaults();
+void coreTask( void * pvParameters );
 #pragma endregion
+
+
+void coreTask( void * pvParameters ){
+    while(true){
+        intervallometer.loop();
+    }
+}
+
 
 class StatusCallback : public BLECharacteristicCallbacks
 {
@@ -54,12 +64,20 @@ void setup()
   setCallbacks();
   setDefaults();
 
+  xTaskCreatePinnedToCore(
+                    coreTask,   /* Function to implement the task */
+                    "coreTask", /* Name of the task */
+                    10000,      /* Stack size in words */
+                    NULL,       /* Task input parameter */
+                    0,          /* Priority of the task */
+                    NULL,       /* Task handle. */
+                    taskCore);  /* Core where the task should run */
+
   Serial.begin(9600);
 }
 
 void loop()
 {
-  intervallometer.loop();
 }
 
 void initBLE()

@@ -28,6 +28,22 @@ void IntervalloMeter::loop(){
         case IntervallometerStatus::BulbIntervallometer:
             SingleShot(this->wait);
             break;
+
+        case IntervallometerStatus::SingleShot:
+            SingleShot(this->shotDelay);
+            this->status = IntervallometerStatus::IDLE;
+            break;
+        
+        case IntervallometerStatus::Bulb:
+            SingleShot(this->wait);
+            this->status = IntervallometerStatus::IDLE;
+            break;
+
+        case IntervallometerStatus::TimerBulb:
+            Delay(this->delay);
+            SingleShot(this->wait);
+            this->status = IntervallometerStatus::IDLE;
+            break;
         
         default:
             break;
@@ -50,41 +66,30 @@ void IntervalloMeter::setProgram(Program program){
     this->isAutofocus = program.useAutofocus;
     this->autofocusDelay = program.autofocusDelay * 1000;
     this->status = program.status;
-
-    switch (this->status)
-    {
-    case IntervallometerStatus::SingleShot:
-        SingleShot(this->shotDelay);
-        this->status = IntervallometerStatus::IDLE;
-        break;
-    
-    case IntervallometerStatus::Bulb:
-        SingleShot(this->wait);
-        this->status = IntervallometerStatus::IDLE;
-        break;
-
-    case IntervallometerStatus::TimerBulb:
-        Arduino_h::delay(this->delay);
-        SingleShot(this->wait);
-        this->status = IntervallometerStatus::IDLE;
-        break;
-    
-    default:
-        break;
-    }
 }
 
 #pragma region private methods
 void IntervalloMeter::SingleShot(long unsigned int waitTime){
     digitalWrite(this->autoFocusPin, HIGH);
     if(this->isAutofocus){
-        Arduino_h::delay(this->autofocusDelay);
+        Delay(this->autofocusDelay);
     }
 
     digitalWrite(this->shotPin, HIGH);
-    Arduino_h::delay(waitTime);
+
+    Delay(waitTime);
     digitalWrite(this->shotPin, LOW);
     digitalWrite(this->autoFocusPin, LOW);
+}
+
+void IntervalloMeter::Delay(long unsigned int waitTime){
+    long int time_now = millis();
+
+    while (millis() < (time_now + waitTime)){
+        if (this->status == IntervallometerStatus::IDLE){
+            break;
+        }
+    }
 }
 
 #pragma endregion
