@@ -6,6 +6,7 @@
     - [Build and upload manually](#build-and-upload-manually)
   - [Intervallometer Status](#intervallometer-status)
   - [GATT server](#gatt-server)
+    - [Service UUID](#service-uuid)
     - [Characteristics UUIDs](#characteristics-uuids)
 
 # ESP-DSLR-Trigger
@@ -117,6 +118,9 @@ GATT servers organize their data into services and characteristics. A service is
 
 GATT clients can read and write data from GATT servers. They can also subscribe to notifications from GATT servers, which means that they will be notified whenever the value of a characteristic changes.
 
+### Service UUID
+The UUID of the service is: `4fafc201-1fb5-459e-8fcc-c5c9c331914b`
+
 ### Characteristics UUIDs
 |            Name             |                    UUID                 |     Type    | What it's used for |
 | --------------------------- | ----------------------------------------| ----------- | ------------------ |
@@ -124,3 +128,5 @@ GATT clients can read and write data from GATT servers. They can also subscribe 
 | SHOTS_CHARACTERISTICS_UUID  | `5bd6d6d5-8d8a-43c1-9626-ae6b45b5dfa6`    | `R`/`W`/`N` | Sets the number of shots to be taken, the counter is scaled with each shot taken and clients are notified |
 | WAIT_CHARACTERISTICS_UUID   | `fe8cb5c3-db5c-4de7-9e2c-fb7dec9f469b`    | `R`/`W`     | Sets the time to wait for BULB poses |
 | STATUS_CHARACTERISTICS_UUID | `1f85fe39-fe80-4bfe-8df0-a8a893d22dc1`    | `R`/`W`     | Sets the type of shot: Single Shot, Bulb, Intervallometer, Bulb Intervallometer, Timer Bulb |
+| AUTOFOCUS_CHARACTERISTICS_UUID | `29292731-e87e-4834-a5dc-6f18b3535cd6`    | `R`/`W`     | Sets whether or not to use autofocus |
+| AUTOFOCUS_DELAY_CHARACTERISTICS_UUID | `0cc3228d-d3fc-4d62-93dd-8e1396d5544c`    | `R`/`W`     | Sets the autofocus delay |

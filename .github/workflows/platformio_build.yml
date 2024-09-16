@@ -17,16 +17,16 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.12'
 
       - name: Install PlatformIO Core
         run: pip install --upgrade platformio
 
       - name: Build PlatformIO Project
-        working-directory: ./arduino/ESP-Intervallometer
+        working-directory: ./ESP-Intervallometer
         run: pio run
 
       - uses: actions/upload-artifact@v3
         with:
           name: firmware.bin
-          path: ./arduino/ESP-Intervallometer/.pio/build/esp32dev/firmware.bin
+          path: ./ESP-Intervallometer/.pio/build/esp32dev/firmware.bin
